@@ -1,0 +1,22 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Summary</title>
+{% endblock %}
+
+{% block body %}
+<div style="display:flex;">
+    <div style="width:50%;border:1px solid black;font-size:18px">
+        <h3 style="text-align:center">Summary</h3>
+        {{ summary }}
+    </div>
+
+    <div style="width:50%">
+        <img style="width:100%" src="data:image/png;base64,{{ wordcloud_image }}" alt="Plot"  />
+    </div>
+</div>
+
+
+{% endblock %}
+
+

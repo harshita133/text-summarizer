@@ -1,0 +1,39 @@
+{% extends 'index.html' %}
+
+{% block head %}
+<title>Home</title>
+{% endblock %}
+
+
+
+{% block body %}
+<div class="div-body">
+    <h2>Text Summarization</h2>
+<form action="/upload" method="post" enctype="multipart/form-data">
+    <div>
+    <label for="year">Select Year:</label>
+    <select name="year" id="year">
+        {% for year in range(2023, 2010, -1) %}
+        <option value="{{ year }}">{{ year }}</option>
+        {% endfor %}
+    </select >
+    </div>
+    <div>
+    <label for="quarter" >Select Quarter:</label>
+    <select name="quarter" id="quarter">
+    <option>1</option>
+    <option>2</option>
+    <option>3</option>
+    <option>4</option>
+    </select >
+    </div>
+    <div>
+    <input type="submit" id="submit" value="Submit" />
+    </div>
+
+  </form>
+
+</div>
+{% endblock %}
+
+
