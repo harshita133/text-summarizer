@@ -158,6 +158,8 @@ def upload():
     name="Data"+str(year)+"q"+str(quarter)+".csv"
     df4 = df4[df4['year'] == year]
     df4 = df4[df4['quarter'] == quarter]
+    df4 = df4.assign(row_number=range(len(df4)))
+    df4.set_index("row_number", inplace=True)
     df4.to_csv(name)
     df=df4.copy()
     #capitalnamefiles is new
