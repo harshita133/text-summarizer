@@ -143,19 +143,26 @@ def index():
 def upload():
     year = int(request.form.get('year'))
     quarter = int(request.form.get('quarter'))
-
-    df=pd.read_csv('transcripts_of_NTR.csv')
-    df2=pd.read_csv('transcripts_list_of_NTRQuarterly.csv')
+    company=(request.form.get('company'))
+    df=pd.read_csv('transcripts_of_MOS.csv')
+    df2=pd.read_csv('transcripts_list_of_MOS.csv')
+    df5=pd.read_csv('transcripts_list_of_NTRQuarterly.csv')
+    df6=pd.read_csv('transcripts_of_NTR.csv')
     df3=pd.merge(df, df2, on='id')
+    df7=pd.merge(df5, df6, on='id')
     df4=pd.DataFrame()
-    df4=df3.copy()
+    if company=="MOS":
+     df4=df3.copy()
+    else:
+     df4=df7.copy()
+    
     count=0
     for i in range(0,len(df4)):
         if (df4['year'][i]==year) and (df4['quarter'][i]==quarter) :
             print(f" {df4['year'][i]} {year}")
             count=count+1
     
-    name="Data"+str(year)+"q"+str(quarter)+".csv"
+    name=company+"Data"+str(year)+"q"+str(quarter)+".csv"
     df4 = df4[df4['year'] == year]
     df4 = df4[df4['quarter'] == quarter]
     df4 = df4.assign(row_number=range(len(df4)))
