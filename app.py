@@ -144,6 +144,7 @@ def upload():
     year = int(request.form.get('year'))
     quarter = int(request.form.get('quarter'))
     company=(request.form.get('company'))
+    commodity=(request.form.get('Commodity'))
     df=pd.read_csv('transcripts_of_MOS.csv')
     df2=pd.read_csv('transcripts_list_of_MOS.csv')
     df5=pd.read_csv('transcripts_list_of_NTRQuarterly.csv')
@@ -195,10 +196,20 @@ def upload():
 def display():
     summary = request.args.get('summary')
     output_text = request.args.get('output_text')
+    
+    
+    output_text_adjectives=remove_duplicates(remove_plural(extract_adjectives_nltk(summary)))
+    output_text_adverbs=remove_duplicates(remove_plural(extract_adverbs_nltk(summary)))
+    output_text_nouns=remove_duplicates(remove_plural(extract_nouns_nltk(summary)))
+    output_text_nounsverbs=remove_duplicates(remove_plural(extract_nounsverbs_nltk(summary)))
+    output_text_verbs=remove_duplicates(remove_plural(extract_verbs_nltk(summary)))
+    
     print("phele", file=sys.stderr)
-    print(output_text, file=sys.stderr)
+    
+    print(output_text_adjectives, file=sys.stderr)
     print("baadme", file=sys.stderr)
-
+    
+    
     wordcloud = WordCloud(width=800, height=800, background_color='white', min_font_size=10).generate(output_text)
     img_stream = io.BytesIO()
     plt.figure(figsize=(8, 8), facecolor=None)
@@ -207,7 +218,21 @@ def display():
     plt.savefig(img_stream, format="png")
     img_stream.seek(0)
     img_base64 = base64.b64encode(img_stream.read()).decode()
-    return render_template('display.html', summary=summary,wordcloud_image=img_base64)
+    
+    wordcloud_adjectives = WordCloud(width=800, height=800, background_color='white', min_font_size=10).generate(output_text_adjectives)
+    img_stream_adjectives = io.BytesIO()
+    plt.figure(figsize=(8, 8), facecolor=None)
+    plt.imshow(wordcloud_adjectives, interpolation="bilinear")
+    plt.axis("off")
+    plt.savefig(img_stream_adjectives, format="png")
+    img_stream_adjectives.seek(0)
+    img_base64_adjectives = base64.b64encode(img_stream_adjectives.read()).decode()
+    
+
+    
+    return render_template('display.html', summary=summary,wordcloud_image=img_base64,wordcloud_image_adjectives=img_base64_adjectives)
+
+
     
 
 if __name__ == "__main__":

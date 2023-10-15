@@ -9,12 +9,40 @@
     <div style="width:50%;border:1px solid black;font-size:18px">
         <h3 style="text-align:center">Summary</h3>
         {{ summary }}
+        
     </div>
 
+
+
     <div style="width:50%">
-        <img style="width:100%" src="data:image/png;base64,{{ wordcloud_image }}" alt="Plot"  />
+     
+        
+        <a ><button type="button" id="adjectives">Adjectives</button></a>
+       
+        <h4>Enter a word to begin search</h4>
+        <div><input type="text" placeholder="Search.." name="search">
+        <input type="submit" id="submitword" value="Submit" />
+        </div>
+
+        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image }}" alt="Plot"  /> 
+        <!--changing to wordcloud_image_adjectives it showing adjectves wordcloud.-->
     </div>
+    
+    
 </div>
+
+
+<script>
+    const image = document.getElementById('image');
+ 
+    const button3 = document.getElementById('adjectives');
+
+    button3.addEventListener('click', () => {
+        image.src = "data:image/png;base64,{{ wordcloud_image_adjectives }}" alt="Plot"; // Change the image source
+        
+    });
+</script>
+
 
 
 {% endblock %}
