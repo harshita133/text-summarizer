@@ -219,6 +219,42 @@ def display():
     img_stream.seek(0)
     img_base64 = base64.b64encode(img_stream.read()).decode()
     
+    wordcloud_verbs = WordCloud(width=800, height=800, background_color='white', min_font_size=10).generate(output_text_verbs)
+    img_stream_verbs = io.BytesIO()
+    plt.figure(figsize=(8, 8), facecolor=None)
+    plt.imshow(wordcloud_verbs, interpolation="bilinear")
+    plt.axis("off")
+    plt.savefig(img_stream_verbs, format="png")
+    img_stream_verbs.seek(0)
+    img_base64_verbs = base64.b64encode(img_stream_verbs.read()).decode()
+    
+    wordcloud_nounsverbs = WordCloud(width=800, height=800, background_color='white', min_font_size=10).generate(output_text_nounsverbs)
+    img_stream_nounsverbs = io.BytesIO()
+    plt.figure(figsize=(8, 8), facecolor=None)
+    plt.imshow(wordcloud_nounsverbs, interpolation="bilinear")
+    plt.axis("off")
+    plt.savefig(img_stream_nounsverbs, format="png")
+    img_stream_nounsverbs.seek(0)
+    img_base64_nounsverbs = base64.b64encode(img_stream_nounsverbs.read()).decode()
+    
+    wordcloud_nouns = WordCloud(width=800, height=800, background_color='white', min_font_size=10).generate(output_text_nouns)
+    img_stream_nouns = io.BytesIO()
+    plt.figure(figsize=(8, 8), facecolor=None)
+    plt.imshow(wordcloud_nouns, interpolation="bilinear")
+    plt.axis("off")
+    plt.savefig(img_stream_nouns, format="png")
+    img_stream_nouns.seek(0)
+    img_base64_nouns = base64.b64encode(img_stream_nouns.read()).decode()
+    
+    wordcloud_adverbs = WordCloud(width=800, height=800, background_color='white', min_font_size=10).generate(output_text_adverbs)
+    img_stream_adverbs = io.BytesIO()
+    plt.figure(figsize=(8, 8), facecolor=None)
+    plt.imshow(wordcloud_adverbs, interpolation="bilinear")
+    plt.axis("off")
+    plt.savefig(img_stream_adverbs, format="png")
+    img_stream_adverbs.seek(0)
+    img_base64_adverbs = base64.b64encode(img_stream_adverbs.read()).decode()
+    
     wordcloud_adjectives = WordCloud(width=800, height=800, background_color='white', min_font_size=10).generate(output_text_adjectives)
     img_stream_adjectives = io.BytesIO()
     plt.figure(figsize=(8, 8), facecolor=None)
@@ -230,7 +266,7 @@ def display():
     
 
     
-    return render_template('display.html', summary=summary,wordcloud_image=img_base64,wordcloud_image_adjectives=img_base64_adjectives)
+    return render_template('display.html', summary=summary,wordcloud_image=img_base64,wordcloud_image_adjectives=img_base64_adjectives, wordcloud_image_adverbs=img_base64_adverbs , wordcloud_image_verbs=img_base64_verbs, wordcloud_image_nouns=img_base64_nouns,wordcloud_image_nounsverbs=img_base64_nounsverbs)
 
 
     

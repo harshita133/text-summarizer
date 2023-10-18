@@ -17,14 +17,18 @@
     <div style="width:50%">
      
         
-        <a ><button type="button" id="adjectives">Adjectives</button></a>
+        <button type="button" id="toggleButton">Adjective</button>
        
         <h4>Enter a word to begin search</h4>
         <div><input type="text" placeholder="Search.." name="search">
         <input type="submit" id="submitword" value="Submit" />
         </div>
 
-        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image }}" alt="Plot"  /> 
+        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image}}" alt="Plot"  /> 
+        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image_adverbs}}" alt="Plot"  />
+        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image_verbs}}" alt="Plot"  />
+        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image_nouns}}" alt="Plot"  />
+        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image_nounsverbs}}" alt="Plot"  />
         <!--changing to wordcloud_image_adjectives it showing adjectves wordcloud.-->
     </div>
     
@@ -33,14 +37,21 @@
 
 
 <script>
-    const image = document.getElementById('image');
- 
-    const button3 = document.getElementById('adjectives');
+        // JavaScript code to toggle between images
+        const wordcloudImage = document.getElementById("image");
+        const toggleButton = document.getElementById("toggleButton");
+        let showAdjectives = false;
 
-    button3.addEventListener('click', () => {
-        image.src = "data:image/png;base64,{{ wordcloud_image_adjectives }}" alt="Plot"; // Change the image source
-        
-    });
+        toggleButton.addEventListener("click", () => {
+            if (showAdjectives) {
+                wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image }}";
+                toggleButton.textContent = "Adjective";
+            } else {
+                wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image_adjectives }}";
+                toggleButton.textContent = "WordCloud";
+            }
+            showAdjectives = !showAdjectives;
+        });
 </script>
 
 

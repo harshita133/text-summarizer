@@ -11,6 +11,21 @@
     <h2>Text Summarization</h2>
 <form action="/upload" method="post" enctype="multipart/form-data">
     <div>
+        <label for="Commodity" >Select Commodity Group:</label>
+        <select name="Commodity" id="Commodity">
+        <option>com1 </option>
+        <option>com2</option>
+        </select >
+</div>
+<div>
+    <label for="company" >Select Company:</label>
+    <select name="company" id="company">
+    <option>NTR</option>
+    <option>MOS</option>
+    </select >
+</div>
+    <div>
+        
     <label for="year">Select Year:</label>
     <select name="year" id="year">
         {% for year in range(2023, 2010, -1) %}
@@ -27,20 +42,8 @@
     <option>4</option>
     </select >
     </div>
-    <div>
-        <label for="company" >Select Company:</label>
-        <select name="company" id="company">
-        <option>NTR</option>
-        <option>MOS</option>
-        </select >
-    </div>
-    <div>
-            <label for="Commodity" >Select Commodity Group:</label>
-            <select name="Commodity" id="Commodity">
-            <option>com1 </option>
-            <option>com2</option>
-            </select >
-    </div>
+    
+  
     <div>
     <input type="submit" id="submit" value="Submit" />
     </div>
