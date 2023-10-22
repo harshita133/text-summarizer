@@ -18,6 +18,16 @@
      
         
         <button type="button" id="toggleButton">Adjective</button>
+
+        <label for="dropdown">Select a Part of Speech:</label>
+        <select id="dropdown" name="dropdown">
+            <option value="option1">Default</option>
+            <option value="option2">Noun</option>
+            <option value="option3">Verb</option>
+            <option value="option4">Adverb</option>
+            <option value="option5">Adjective</option>
+            <option value="option6">Nouns and Verbs</option>
+        </select>
        
         <h4>Enter a word to begin search</h4>
         <div><input type="text" placeholder="Search.." name="search">
@@ -41,17 +51,19 @@
         const wordcloudImage = document.getElementById("image");
         const toggleButton = document.getElementById("toggleButton");
         let showAdjectives = false;
+        
 
         toggleButton.addEventListener("click", () => {
             if (showAdjectives) {
                 wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image }}";
-                toggleButton.textContent = "Adjective";
+                toggleButton.textContent = "Adjectives";
             } else {
                 wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image_adjectives }}";
                 toggleButton.textContent = "WordCloud";
             }
             showAdjectives = !showAdjectives;
         });
+    
 </script>
 
 
