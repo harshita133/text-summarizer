@@ -27,6 +27,7 @@ import threading
 matplotlib.use('agg')
 
 app = Flask(__name__)
+app.secret_key = 'abcd'
 def count_sentences(text):
     # Tokenize the text into sentences
     sentences = sent_tokenize(text)
@@ -131,14 +132,15 @@ def extract_nounsverbs_nltk(text):
 
 # Store the plot in memory as a BytesIO object
 
- 
 
+ 
+cache = {}
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
     return render_template('upload.html')
 
-
+temp={}
 @app.route('/upload', methods=['POST'])
 def upload():
     year = int(request.form.get('year'))
@@ -160,7 +162,6 @@ def upload():
     count=0
     for i in range(0,len(df4)):
         if (df4['year'][i]==year) and (df4['quarter'][i]==quarter) :
-            print(f" {df4['year'][i]} {year}")
             count=count+1
     
     name=company+"Data"+str(year)+"q"+str(quarter)+".csv"
@@ -179,7 +180,7 @@ def upload():
 
     nltk.download('punkt')
     text=text
-
+    temp['text']=text
     # Call the function to count sentences
     num_sentences = count_sentences(text)
 
@@ -188,7 +189,6 @@ def upload():
     summary = summarize_text(text, num_sentences=num_summary_sentences)
     # Pre-process summary for generating word clouds
     output_text=remove_duplicates(remove_plural(extract_nounsverbs_nltk(summary)))
-   
     return redirect(url_for('display', summary=summary,output_text=output_text))
     
     
@@ -196,7 +196,7 @@ def upload():
 def display():
     summary = request.args.get('summary')
     output_text = request.args.get('output_text')
-    
+    original_text = temp['text']
     
     output_text_adjectives=remove_duplicates(remove_plural(extract_adjectives_nltk(summary)))
     output_text_adverbs=remove_duplicates(remove_plural(extract_adverbs_nltk(summary)))
@@ -206,7 +206,7 @@ def display():
     
     print("phele", file=sys.stderr)
     
-    print(output_text_adjectives, file=sys.stderr)
+    print(temp['text'], file=sys.stderr)
     print("baadme", file=sys.stderr)
     
     
@@ -265,11 +265,44 @@ def display():
     img_base64_adjectives = base64.b64encode(img_stream_adjectives.read()).decode()
     
 
-    
-    return render_template('display.html', summary=summary,wordcloud_image=img_base64,wordcloud_image_adjectives=img_base64_adjectives, wordcloud_image_adverbs=img_base64_adverbs , wordcloud_image_verbs=img_base64_verbs, wordcloud_image_nouns=img_base64_nouns,wordcloud_image_nounsverbs=img_base64_nounsverbs)
+    #original text is the main trasnrcipt data , serached_text are the output sentences after searching
+    return render_template('display.html', original_text=original_text,summary=summary,searched_text="NA",wordcloud_image=img_base64,wordcloud_image_adjectives=img_base64_adjectives, wordcloud_image_adverbs=img_base64_adverbs , wordcloud_image_verbs=img_base64_verbs, wordcloud_image_nouns=img_base64_nouns,wordcloud_image_nounsverbs=img_base64_nounsverbs)
 
 
-    
+import re
+
+def find_sentences_with_word(paragraph, word):
+    # Split the paragraph into sentences using regular expressions
+    sentences = re.split(r'(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?|\!)\s', paragraph)
+
+    # Initialize a list to store sentences containing the word
+    sentences_with_word = []
+
+    # Iterate through each sentence
+    for sentence in sentences:
+        # Check if the word is in the sentence (case insensitive)
+        if re.search(rf'\b{re.escape(word)}\b', sentence, re.IGNORECASE):
+            sentences_with_word.append(sentence)
+
+    return sentences_with_word
+
+@app.route('/search', methods=['POST'])
+def search():
+    word_to_find = request.form.get('word')
+    wordcloud_image = request.form.get('wordcloud_image')
+    wordcloud_image_adjectives = request.form.get('wordcloud_image_adjectives')
+    wordcloud_image_adverbs = request.form.get('wordcloud_image_adverbs')
+    wordcloud_image_verbs = request.form.get('wordcloud_image_verbs')
+    wordcloud_image_nouns = request.form.get('wordcloud_image_nouns')
+    wordcloud_image_nounsverbs = request.form.get('wordcloud_image_nounsverbs')
+    summary = request.form.get('summary')
+    original_text = request.form.get('original_text')
+
+    sentences_containing_word = find_sentences_with_word(original_text, word_to_find)
+
+    print(f" {sentences_containing_word}")
+    return render_template('display.html', searched_text=sentences_containing_word,original_text=original_text,summary=summary,wordcloud_image=wordcloud_image,wordcloud_image_adjectives=wordcloud_image_adjectives, wordcloud_image_adverbs=wordcloud_image_adverbs , wordcloud_image_verbs=wordcloud_image_verbs, wordcloud_image_nouns=wordcloud_image_nouns,wordcloud_image_nounsverbs=wordcloud_image_nounsverbs)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

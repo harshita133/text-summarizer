@@ -7,38 +7,70 @@
 {% block body %}
 <div style="display:flex;">
     <div style="width:50%;border:1px solid black;font-size:18px">
-        <h3 style="text-align:center">Summary</h3>
-        {{ summary }}
+        <div id="select-parent">
+            <form action="/search" method="post" enctype="multipart/form-data">
+                <label for="word" >Search Word:</label>
+                <input type="text" name="word" placeholder="Search.." name="search">
+                        <!-- Hidden inputs to include the wordcloud images -->
+                <input type="hidden" name="wordcloud_image" value="{{ wordcloud_image }}">
+                <input type="hidden" name="wordcloud_image_adjectives" value="{{ wordcloud_image_adjectives }}">
+                <input type="hidden" name="wordcloud_image_adverbs" value="{{ wordcloud_image_adverbs }}">
+                <input type="hidden" name="wordcloud_image_verbs" value="{{ wordcloud_image_verbs }}">
+                <input type="hidden" name="wordcloud_image_nouns" value="{{ wordcloud_image_nouns }}">
+                <input type="hidden" name="wordcloud_image_nounsverbs" value="{{ wordcloud_image_nounsverbs }}">
+                <input type="hidden" name="summary" value="{{ summary }}">
+                <input type="hidden" name="original_text" value="{{ original_text }}">
+
+
+                <input type="submit" id="submit" value="Search" />
+            </form>
+            {% if searched_text != "NA" %}
+                <button id="show_summary">Show Summary</button>
+            {% endif %}
+        </div>
+        {% if searched_text != "NA" %}
+            <div id="searched_text">
+                <h3 style="text-align:center">Search Result</h3>
+                {% for paragraph in searched_text %}
+                    {% set sentences = paragraph.split('. ') %}
+                    {% for sentence in sentences %}
+                        <p>Sentence {{ loop.index }}: {{ sentence }}</p>
+                    {% endfor %}
+                    <br>
+                {% endfor %}
+            </div>
+            <div id="summary-text" style="display: none;">
+                <h3 style="text-align:center">Summary</h3>
+                {{ summary }}
+            </div>
+        {% endif %}
+        {% if searched_text == "NA" %}
+            <div id="summary-text" >
+                <h3 style="text-align:center">Summary</h3>
+                {{ summary }}
+            </div>
+        {% endif %}
+
         
     </div>
 
-
-
     <div style="width:50%">
-     
-        
-        <button type="button" id="toggleButton">Adjective</button>
 
-        <label for="dropdown">Select a Part of Speech:</label>
-        <select id="dropdown" name="dropdown">
-            <option value="option1">Default</option>
-            <option value="option2">Noun</option>
-            <option value="option3">Verb</option>
-            <option value="option4">Adverb</option>
-            <option value="option5">Adjective</option>
-            <option value="option6">Nouns and Verbs</option>
+        
+    <div id="select-parent">
+        <span>Select Image: </span>
+        <select id="mySelect">
+            <option value="wordcloud_image">WordCloud Image</option>
+            <option value="wordcloud_image_adjectives">Adjective</option>
+            <option value="wordcloud_image_adverbs">Adverbs</option>
+            <option value="wordcloud_image_verbs">Verbs</option>
+            <option value="wordcloud_image_nouns">Nouns</option>
+            <option value="wordcloud_image_nounsverbs">Nouns and Verbs</option>
         </select>
-       
-        <h4>Enter a word to begin search</h4>
-        <div><input type="text" placeholder="Search.." name="search">
-        <input type="submit" id="submitword" value="Submit" />
-        </div>
+    </div>
+
 
         <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image}}" alt="Plot"  /> 
-        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image_adverbs}}" alt="Plot"  />
-        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image_verbs}}" alt="Plot"  />
-        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image_nouns}}" alt="Plot"  />
-        <img id="image" style="width:100%"  src="data:image/png;base64,{{ wordcloud_image_nounsverbs}}" alt="Plot"  />
         <!--changing to wordcloud_image_adjectives it showing adjectves wordcloud.-->
     </div>
     
@@ -49,21 +81,31 @@
 <script>
         // JavaScript code to toggle between images
         const wordcloudImage = document.getElementById("image");
-        const toggleButton = document.getElementById("toggleButton");
-        let showAdjectives = false;
-        
+        const toggleButton = document.getElementById("mySelect");
 
-        toggleButton.addEventListener("click", () => {
-            if (showAdjectives) {
-                wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image }}";
-                toggleButton.textContent = "Adjectives";
-            } else {
+        toggleButton.addEventListener("change", () => {
+            var selectedValue = toggleButton.value;
+            if (selectedValue === "wordcloud_image") {
+            wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image }}";
+            } else if (selectedValue === "wordcloud_image_adjectives") {
                 wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image_adjectives }}";
-                toggleButton.textContent = "WordCloud";
+            } else if (selectedValue === "wordcloud_image_adverbs") {
+                wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image_adverbs }}";
+            } else if (selectedValue === "wordcloud_image_verbs") {
+                wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image_verbs }}";
+            } else if (selectedValue === "wordcloud_image_nouns") {
+                wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image_nouns }}";
+            } else if (selectedValue === "wordcloud_image_nounsverbs") {
+                wordcloudImage.src = "data:image/png;base64,{{ wordcloud_image_nounsverbs }}";
             }
-            showAdjectives = !showAdjectives;
+
         });
-    
+
+        document.getElementById("show_summary").addEventListener("click", function() {
+            document.getElementById("searched_text").style.display = "none";
+            document.getElementById("summary-text").style.display = "block";
+            document.getElementById("show_summary").style.display="none"
+        });
 </script>
 
 
