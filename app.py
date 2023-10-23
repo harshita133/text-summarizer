@@ -283,8 +283,28 @@ def find_sentences_with_word(paragraph, word):
         # Check if the word is in the sentence (case insensitive)
         if re.search(rf'\b{re.escape(word)}\b', sentence, re.IGNORECASE):
             sentences_with_word.append(sentence)
-
+    
     return sentences_with_word
+
+def have_same_starting_words(sentence1, sentence2):
+    words1 = sentence1.split()[:5]
+    words2 = sentence2.split()[:5]
+
+    return words1 == words2
+
+def remove_sentences_with_similar_starts(paragraph):
+    sentences = paragraph.split(". ")
+    sentences_to_remove = set()
+
+    for i in range(len(sentences)):
+        for j in range(i + 1, len(sentences)):
+            if have_same_starting_words(sentences[i], sentences[j]):
+                sentences_to_remove.add(j)
+
+    sentences_to_keep = [sentences[i] for i in range(len(sentences)) if i not in sentences_to_remove]
+    cleaned_paragraph = ". ".join(sentences_to_keep)
+
+    return cleaned_paragraph
 
 @app.route('/search', methods=['POST'])
 def search():
@@ -299,7 +319,9 @@ def search():
     original_text = request.form.get('original_text')
 
     sentences_containing_word = find_sentences_with_word(original_text, word_to_find)
-
+    texttry = ' '.join(sentences_containing_word)
+    cleaned_paragraph = remove_sentences_with_similar_starts(texttry)
+    sentences_containing_word = sent_tokenize(cleaned_paragraph)
     print(f" {sentences_containing_word}")
     return render_template('display.html', searched_text=sentences_containing_word,original_text=original_text,summary=summary,wordcloud_image=wordcloud_image,wordcloud_image_adjectives=wordcloud_image_adjectives, wordcloud_image_adverbs=wordcloud_image_adverbs , wordcloud_image_verbs=wordcloud_image_verbs, wordcloud_image_nouns=wordcloud_image_nouns,wordcloud_image_nounsverbs=wordcloud_image_nounsverbs)
 
